@@ -80,33 +80,33 @@ module Guard
         subject.run_on_changes(['spec/foo'])
       end
 
-      # context 'the changed specs pass after failing' do
-      #   it 'calls #run_all' do
-      #     runner.should_receive(:run).with(['spec/foo']) { false }
+      context 'the changed specs pass after failing' do
+        it 'calls #run_all' do
+          runner.should_receive(:run).with(['spec/foo']) { false }
 
-      #     expect { subject.run_on_changes(['spec/foo']) }.to throw_symbol :task_has_failed
+          expect { subject.run_on_changes(['spec/foo']) }.to throw_symbol :task_has_failed
 
-      #     runner.should_receive(:run).with(['spec/foo']) { true }
-      #     subject.should_receive(:run_all)
+          runner.should_receive(:run).with(['spec/foo']) { true }
+          subject.should_receive(:run_all)
 
-      #     expect { subject.run_on_changes(['spec/foo']) }.to_not throw_symbol
-      #   end
+          expect { subject.run_on_changes(['spec/foo']) }.to_not throw_symbol
+        end
 
-      #   context ':all_after_pass option is false' do
-      #     subject { described_class.new([], :all_after_pass => false) }
+        context ':all_after_pass option is false' do
+          subject { described_class.new([], :all_after_pass => false) }
 
-      #     it "doesn't call #run_all" do
-      #       runner.should_receive(:run).with(['spec/foo']) { false }
+          it "doesn't call #run_all" do
+            runner.should_receive(:run).with(['spec/foo']) { false }
 
-      #       expect { subject.run_on_changes(['spec/foo']) }.to throw_symbol :task_has_failed
+            expect { subject.run_on_changes(['spec/foo']) }.to throw_symbol :task_has_failed
 
-      #       runner.should_receive(:run).with(['spec/foo']) { true }
-      #       subject.should_not_receive(:run_all)
+            runner.should_receive(:run).with(['spec/foo']) { true }
+            subject.should_not_receive(:run_all)
 
-      #       expect { subject.run_on_changes(['spec/foo']) }.to_not throw_symbol
-      #     end
-      #   end
-      # end
+            expect { subject.run_on_changes(['spec/foo']) }.to_not throw_symbol
+          end
+        end
+      end
 
       context 'the changed specs pass without failing' do
         it "doesn't call #run_all" do

@@ -56,6 +56,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_changes(paths)
       paths += @failed_paths if @options[:keep_failed]
+      paths.uniq!
 
       if passed = @runner.run(paths)
         remove_failed(paths)

@@ -18,6 +18,8 @@ module Guard
           message = options[:message] || "Running: #{paths.join(' ')}"
         end
 
+        return false if paths.empty?
+
         UI.info(message, :reset => true)
 
         run_via_shell rake_command(paths)
