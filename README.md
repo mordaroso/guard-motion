@@ -26,7 +26,7 @@ $ guard init motion
 
 Make sure Guard::Motion is loaded in your project Rakefile:
 
-```
+``` ruby
 require 'guard/motion'
 ```
 
