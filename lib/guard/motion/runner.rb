@@ -1,7 +1,8 @@
+require 'pty'
+
 module Guard
   class Motion
     class Runner
-
       def initialize(options = {})
         @options = {
           :bundler      => true,
@@ -22,7 +23,27 @@ module Guard
 
         UI.info(message, :reset => true)
 
-        run_via_shell rake_command(paths)
+        output = run_via_pty rake_command(paths)
+
+        if @options[:notification]
+          notify(output)
+        end
+      end
+
+      def notify(output)
+        message = "Failed"
+        type = :failed
+
+        parser = ResultsParser.new
+        if parser.parse(output)
+          message = "#{parser.specs} specs, #{parser.failures} failures, #{parser.errors} errors"
+        end
+
+        if parser.success?
+          type = :success
+        end
+
+        Notifier.notify(message, :type => type, :image => type, :title => 'RubyMotion Spec Results', :priority => 2)
       end
 
       def rake_executable
@@ -39,14 +60,24 @@ module Guard
         cmd_parts.compact.join(' ')
       end
 
-      def run_via_shell(command)
-        success = system(command)
+      def run_via_pty(command)
+        output = ""
 
-        if @options[:notification] && !success
-          Notifier.notify("Failed", :title => "Motion spec results", :image => :failed, :priority => 2)
+        PTY.spawn(command) do |r, w, pid|
+          begin
+            loop do
+              chunk = r.readpartial(1024)
+              output += chunk
+
+              print chunk
+            end
+          rescue EOFError
+          end
+
+          Process.wait(pid)
         end
 
-        success
+        output
       end
 
       def all_spec_paths

@@ -5,7 +5,8 @@ require 'guard/motion/tasks'
 
 module Guard
   class Motion < Guard
-    autoload :Runner, 'guard/motion/runner'
+    autoload :ResultsParser,  'guard/motion/results_parser'
+    autoload :Runner,         'guard/motion/runner'
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers

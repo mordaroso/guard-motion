@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'guard', '>= 1.1.0'
   gem.add_dependency 'rake',  '>= 0.9'
 
-  gem.add_development_dependency 'bundler',       '~> 1.1.0'
+  gem.add_development_dependency 'bundler',       '>= 1.1.0'
   gem.add_development_dependency 'rspec',         '~> 2.10'
   gem.add_development_dependency 'guard-rspec',   '~> 1.1'
 end

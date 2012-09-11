@@ -6,6 +6,14 @@ module Guard
     describe Runner do
       subject { described_class.new }
 
+      let(:output) { "..............................\n\n31 tests, 35 assertions, 2 failures, 0 errors\n" }
+
+      before do
+        PTY.stub(:spawn).and_yield(StringIO.new(output), StringIO.new, 123)
+        subject.stub(:print)
+        Process.stub(:wait)
+      end
+
       describe '#run' do
         context 'when passed an empty paths list' do
           it 'returns false' do
@@ -19,9 +27,9 @@ module Guard
           end
 
           it 'runs without bundler' do
-            subject.should_receive(:system).with(
+            PTY.should_receive(:spawn).with(
               "rake spec:specific[\"something\"]"
-            ).and_return(true)
+            )
 
             subject.run(['something'])
           end
@@ -33,28 +41,47 @@ module Guard
           end
 
           it 'runs with Bundler' do
-            subject.should_receive(:system).with(
+            PTY.should_receive(:spawn).with(
               "bundle exec rake spec:specific[\"something\"]"
-            ).and_return(true)
+            )
 
             subject.run(['something'])
           end
 
           describe 'notification' do
-            it 'notifies when Motion specs fails to execute' do
-              subject.should_receive(:rake_command) { "`exit 1`" }
-              ::Guard::Notifier.should_receive(:notify).with(
-                'Failed', :title => 'Motion spec results', :image => :failed, :priority => 2
-              )
+            context "when the specs fail to execute" do
+              let(:output) { "" }
 
-              subject.run(['spec'])
+              it "sends a failure notification" do
+                ::Guard::Notifier.should_receive(:notify).with(
+                  'Failed', :title => 'RubyMotion Spec Results', :type => :failed, :image => :failed, :priority => 2
+                )
+
+                subject.run(['spec'])
+              end
             end
 
-            it 'does not notify that Motion specs failed when the specs pass' do
-              subject.should_receive(:rake_command) { "`exit 0`" }
-              ::Guard::Notifier.should_not_receive(:notify)
+            context "when the specs fail" do
+              let(:output) { "..............................\n\n31 tests, 35 assertions, 2 failures, 0 errors\n" }
 
-              subject.run(['spec'])
+              it "sends a spec failed notification" do
+                ::Guard::Notifier.should_receive(:notify).with(
+                  '31 specs, 2 failures, 0 errors', :title => 'RubyMotion Spec Results', :type => :failed, :image => :failed, :priority => 2)
+
+                subject.run(["spec"])
+              end
+            end
+
+            context "when specs pass" do
+              let(:output) { "..............................\n\n31 tests, 35 assertions, 0 failures, 0 errors\n" }
+
+              it "sends a success notification" do
+                ::Guard::Notifier.should_receive(:notify).with(
+                  '31 specs, 0 failures, 0 errors', :title => 'RubyMotion Spec Results', :type => :success, :image => :success, :priority => 2
+                )
+
+                subject.run(['spec'])
+              end
             end
           end
 
@@ -65,9 +92,9 @@ module Guard
                 subject { described_class.new(:bundler => false) }
 
                 it 'runs without Bundler' do
-                  subject.should_receive(:system).with(
+                  PTY.should_receive(:spawn).with(
                     "rake spec:specific[\"spec\"]"
-                  ).and_return(true)
+                  )
 
                   subject.run(['spec'])
                 end
@@ -79,9 +106,9 @@ module Guard
                 subject { described_class.new(:bundler => false, :binstubs => true) }
 
                 it 'runs without Bundler and with binstubs' do
-                  subject.should_receive(:system).with(
+                  PTY.should_receive(:spawn).with(
                     "bin/rake spec:specific[\"spec\"]"
-                  ).and_return(true)
+                  )
 
                   subject.run(['spec'])
                 end
@@ -91,9 +118,9 @@ module Guard
                 subject { described_class.new(:bundler => true, :binstubs => true) }
 
                 it 'runs without Bundler and binstubs' do
-                  subject.should_receive(:system).with(
+                  PTY.should_receive(:spawn).with(
                     "bin/rake spec:specific[\"spec\"]"
-                  ).and_return(true)
+                  )
 
                   subject.run(['spec'])
                 end
@@ -103,9 +130,9 @@ module Guard
                 subject { described_class.new(:bundler => true, :binstubs => 'dir') }
 
                 it 'runs without Bundler and binstubs in custom directory' do
-                  subject.should_receive(:system).with(
+                  PTY.should_receive(:spawn).with(
                     "dir/rake spec:specific[\"spec\"]"
-                  ).and_return(true)
+                  )
 
                   subject.run(['spec'])
                 end
@@ -117,15 +144,18 @@ module Guard
                 subject { described_class.new(:notification => false) }
 
                 it 'runs without notification formatter' do
-                  subject.should_receive(:system).with(
+                  PTY.should_receive(:spawn).with(
                     "bundle exec rake spec:specific[\"spec\"]"
-                  ).and_return(true)
+                  )
 
                   subject.run(['spec'])
                 end
 
                 it "doesn't notify when specs fails" do
-                  subject.should_receive(:system) { mock('res', :success? => false, :exitstatus => 2) }
+                  PTY.should_receive(:spawn).with(
+                    "bundle exec rake spec:specific[\"spec\"]"
+                  )
+
                   ::Guard::Notifier.should_not_receive(:notify)
 
                   subject.run(['spec'])
