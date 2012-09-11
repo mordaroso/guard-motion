@@ -48,6 +48,16 @@ module Guard
             subject.run(['something'])
           end
 
+          context 'when two files refer to the same location' do
+            it 'ignores the second file' do
+              PTY.should_receive(:spawn).with(
+                "bundle exec rake spec:specific[\"first\"]"
+              )
+
+              subject.run(['first', './first', 'second/../first'])
+            end
+          end
+
           describe 'notification' do
             context "when the specs fail to execute" do
               let(:output) { "" }

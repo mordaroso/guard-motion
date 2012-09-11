@@ -16,6 +16,7 @@ module Guard
           paths = all_spec_paths
           message = options[:message] || "Running all specs"
         else
+          paths = uniq_paths(paths)
           message = options[:message] || "Running: #{paths.join(' ')}"
         end
 
@@ -78,6 +79,15 @@ module Guard
         end
 
         output
+      end
+
+      def uniq_paths(paths)
+        full_paths = {}
+        paths.each do |path|
+          full_paths[File.expand_path(path)] ||= path
+        end
+
+        full_paths.values
       end
 
       def all_spec_paths
