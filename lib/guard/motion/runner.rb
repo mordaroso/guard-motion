@@ -7,6 +7,7 @@ module Guard
         @options = {
           :bundler      => true,
           :binstubs     => false,
+          :env          => {},
           :notification => true,
         }.merge(options)
       end
@@ -54,6 +55,11 @@ module Guard
 
       def rake_command(paths)
         cmd_parts = []
+
+        @options[:env].each do |var, value|
+          cmd_parts << "#{var}=#{value}"
+        end
+
         cmd_parts << "bundle exec" if bundle_exec?
         cmd_parts << rake_executable
         cmd_parts << "spec:specific[\"#{paths.join(';')}\"]"
