@@ -86,7 +86,6 @@ module Guard
           end
 
           describe 'options' do
-
             describe ':bundler' do
               context ':bundler => false' do
                 subject { described_class.new(:bundler => false) }
@@ -136,6 +135,18 @@ module Guard
 
                   subject.run(['spec'])
                 end
+              end
+            end
+
+            describe ':env' do
+              subject { described_class.new(:env => { :debug => 1, :output => "test_unit" }) }
+
+              it 'sets environment variables' do
+                PTY.should_receive(:spawn).with(
+                  "debug=1 output=test_unit bundle exec rake spec:specific[\"spec\"]"
+                )
+
+                subject.run(['spec'])
               end
             end
 

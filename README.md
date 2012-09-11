@@ -78,13 +78,14 @@ end
 ### List of available options:
 
 ``` ruby
-:bundler => false            # use "bundle exec" to run the rake command, default: true
-:binstubs => true            # use "bin/rake" to run the rake command (takes precedence over :bundle), default: false
-:notification => false       # display Growl (or Libnotify) notification after the specs are done running, default: true
-:all_after_pass => false     # run all specs after changed specs pass, default: true
-:all_on_start => false       # run all the specs at startup, default: true
-:keep_failed => false        # keep failed specs until they pass, default: true
-:spec_paths => ["spec"]      # specify an array of paths that contain spec files
+:bundler => false                 # use "bundle exec" to run the rake command, default: true
+:binstubs => true                 # use "bin/rake" to run the rake command (takes precedence over :bundle), default: false
+:env => {:output => 'test_unit'}  # set env variables to be used by the RubyMotion spec runner, default: {}
+:notification => false            # display Growl (or Libnotify) notification after the specs are done running, default: true
+:all_after_pass => false          # run all specs after changed specs pass, default: true
+:all_on_start => false            # run all the specs at startup, default: true
+:keep_failed => false             # keep failed specs until they pass, default: true
+:spec_paths => ["spec"]           # specify an array of paths that contain spec files
 ```
 
 You can also use a custom binstubs directory using `:binstubs => 'some-dir'`.
