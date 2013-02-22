@@ -54,7 +54,7 @@ module Guard
 
               it "sends a failure notification" do
                 ::Guard::Notifier.should_receive(:notify).with(
-                  'Failed', :title => 'RubyMotion Spec Results', :type => :failed, :image => :failed, :priority => 2
+                  'Failed', :title => 'RubyMotion Spec Results', :image => :failed, :priority => 2
                 )
 
                 subject.run(['spec'])
@@ -66,7 +66,7 @@ module Guard
 
               it "sends a spec failed notification" do
                 ::Guard::Notifier.should_receive(:notify).with(
-                  '31 specs, 2 failures, 0 errors', :title => 'RubyMotion Spec Results', :type => :failed, :image => :failed, :priority => 2)
+                  '31 specs, 2 failures, 0 errors', :title => 'RubyMotion Spec Results', :image => :failed, :priority => 2)
 
                 subject.run(["spec"])
               end
@@ -77,7 +77,7 @@ module Guard
 
               it "sends a success notification" do
                 ::Guard::Notifier.should_receive(:notify).with(
-                  '31 specs, 0 failures, 0 errors', :title => 'RubyMotion Spec Results', :type => :success, :image => :success, :priority => 2
+                  '31 specs, 0 failures, 0 errors', :title => 'RubyMotion Spec Results', :image => :success, :priority => 2
                 )
 
                 subject.run(['spec'])
