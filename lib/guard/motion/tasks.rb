@@ -15,7 +15,7 @@ if Kernel.const_defined?(:Rake)
       spec_files = App.config.spec_files.select{|file_path| !(file_path =~ /_spec.rb$/)}
       spec_files += files.split(';')
       App.config.instance_variable_set("@spec_files", spec_files)
-      Rake::Task["simulator"].invoke
+      Rake::Task["spec"].invoke
     end
   end
 end
