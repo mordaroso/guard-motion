@@ -7,6 +7,7 @@ module Guard
   class Motion < Guard
     autoload :ResultsParser,  'guard/motion/results_parser'
     autoload :Runner,         'guard/motion/runner'
+    autoload :Inspector,      'guard/motion/inspector'
 
     # Initialize a Guard.
     # @param [Array<Guard::Watcher>] watchers the Guard file watchers
@@ -23,6 +24,7 @@ module Guard
       @failed_paths = []
 
       @runner = Runner.new(@options)
+      @inspector = Inspector.new(@options)
     end
 
     # Call once when Guard starts. Please override initialize method to init stuff.
@@ -57,7 +59,7 @@ module Guard
     # @raise [:task_has_failed] when run_on_change has failed
     def run_on_changes(paths)
       paths += @failed_paths if @options[:keep_failed]
-      paths.uniq!
+      paths = @inspector.clean(paths).uniq
 
       if passed = @runner.run(paths)
         remove_failed(paths)
