@@ -44,7 +44,7 @@ module Guard
           type = :success
         end
 
-        Notifier.notify(message, :type => type, :image => type, :title => 'RubyMotion Spec Results', :priority => 2)
+        Notifier.notify(message, :image => type, :title => 'RubyMotion Spec Results', :priority => 2)
       end
 
       def rake_executable
