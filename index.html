@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Guard-motion by mordaroso</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Guard-motion</h1>
+          <h2>Guard::Motion automatically run your RubyMotion specs (much like autotest)</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/mordaroso/guard-motion/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/mordaroso/guard-motion/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/mordaroso/guard-motion" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="guardmotion-" class="anchor" href="#guardmotion-"><span class="octicon octicon-link"></span></a>Guard::Motion <a href="http://travis-ci.org/mordaroso/guard-motion"><img src="https://secure.travis-ci.org/mordaroso/guard-motion.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>Motion guard allows to automatically &amp; intelligently launch <a href="http://www.rubymotion.com/">RubyMotion</a> specs when files are modified.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Please be sure to have <a href="https://github.com/guard/guard">Guard</a> installed before continue.</p>
+
+<p>Install the gem:</p>
+
+<pre><code>$ gem install guard-motion
+</code></pre>
+
+<p>Add it to your Gemfile (inside development group):</p>
+
+<div class="highlight"><pre><span class="n">gem</span> <span class="s1">'guard-motion'</span>
+</pre></div>
+
+<p>Add guard definition to your Guardfile by running this command:</p>
+
+<pre><code>$ guard init motion
+</code></pre>
+
+<p>Make sure Guard::Motion is loaded in your project Rakefile:</p>
+
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'guard/motion'</span>
+</pre></div>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Please read <a href="https://github.com/guard/guard#readme">Guard usage doc</a></p>
+
+<h2>
+<a name="guardfile" class="anchor" href="#guardfile"><span class="octicon octicon-link"></span></a>Guardfile</h2>
+
+<p>Motion guard can be really adapted to all kind of project setup.</p>
+
+<h3>
+<a name="typical-rubymotion-app" class="anchor" href="#typical-rubymotion-app"><span class="octicon octicon-link"></span></a>Typical RubyMotion App</h3>
+
+<div class="highlight"><pre><span class="n">guard</span> <span class="s1">'motion'</span> <span class="k">do</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/.+_spec\.rb$}</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^app/(.+)\.rb$}</span><span class="p">)</span>     <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">"spec/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="typical-rubymotion-library" class="anchor" href="#typical-rubymotion-library"><span class="octicon octicon-link"></span></a>Typical RubyMotion library</h3>
+
+<div class="highlight"><pre><span class="n">guard</span> <span class="s1">'motion'</span> <span class="k">do</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/.+_spec\.rb$}</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^lib/[^/]+/(.+)\.rb$}</span><span class="p">)</span>     <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">"spec/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb"</span> <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Please read <a href="https://github.com/guard/guard#readme">Guard doc</a> for more information about the Guardfile DSL.</p>
+
+<h2>
+<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<p>By default, Guard::Motion will only look for spec files within <code>spec</code> in your project root. You can configure Guard::Motion to look in additional paths by using the <code>:spec_paths</code> option:</p>
+
+<div class="highlight"><pre><span class="n">guard</span> <span class="s1">'motion'</span><span class="p">,</span> <span class="ss">:spec_paths</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">"spec"</span><span class="p">,</span> <span class="s2">"vendor/other_project/spec"</span><span class="o">]</span> <span class="k">do</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>If you have only one path to look, you can configure <code>:spec_paths</code> option with a string:</p>
+
+<div class="highlight"><pre><span class="n">guard</span> <span class="s1">'motion'</span><span class="p">,</span> <span class="ss">:spec_paths</span> <span class="o">=&gt;</span> <span class="s2">"test"</span> <span class="k">do</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="list-of-available-options" class="anchor" href="#list-of-available-options"><span class="octicon octicon-link"></span></a>List of available options:</h3>
+
+<div class="highlight"><pre><span class="ss">:bundler</span> <span class="o">=&gt;</span> <span class="kp">false</span>                 <span class="c1"># use "bundle exec" to run the rake command, default: true</span>
+<span class="ss">:binstubs</span> <span class="o">=&gt;</span> <span class="kp">true</span>                 <span class="c1"># use "bin/rake" to run the rake command (takes precedence over :bundle), default: false</span>
+<span class="ss">:env</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:output</span> <span class="o">=&gt;</span> <span class="s1">'test_unit'</span><span class="p">}</span>  <span class="c1"># set env variables to be used by the RubyMotion spec runner, default: {}</span>
+<span class="ss">:notification</span> <span class="o">=&gt;</span> <span class="kp">false</span>            <span class="c1"># display Growl (or Libnotify) notification after the specs are done running, default: true</span>
+<span class="ss">:all_after_pass</span> <span class="o">=&gt;</span> <span class="kp">false</span>          <span class="c1"># run all specs after changed specs pass, default: true</span>
+<span class="ss">:all_on_start</span> <span class="o">=&gt;</span> <span class="kp">false</span>            <span class="c1"># run all the specs at startup, default: true</span>
+<span class="ss">:keep_failed</span> <span class="o">=&gt;</span> <span class="kp">false</span>             <span class="c1"># keep failed specs until they pass, default: true</span>
+<span class="ss">:spec_paths</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">"spec"</span><span class="o">]</span>           <span class="c1"># specify an array of paths that contain spec files</span>
+</pre></div>
+
+<p>You can also use a custom binstubs directory using <code>:binstubs =&gt; 'some-dir'</code>.</p>
+
+<h2>
+<a name="development" class="anchor" href="#development"><span class="octicon octicon-link"></span></a>Development</h2>
+
+<ul>
+<li>Source hosted at <a href="https://github.com/mordaroso/guard-motion">GitHub</a>
+</li>
+<li>Report issues/Questions/Feature requests on <a href="https://github.com/mordaroso/guard-motion/issues">GitHub Issues</a>
+</li>
+</ul><p>Pull requests are very welcome! Make sure your patches are well tested. Please create a topic branch for every separate change
+you make.</p>
+        </section>
+
+        <footer>
+          Guard-motion is maintained by <a href="https://github.com/mordaroso">mordaroso</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
