@@ -33,7 +33,7 @@ module Guard
       it 'creates a runner' do
         described_class::Runner.should_receive(:new).with(default_options.merge(:foo => :bar))
 
-        described_class.new([], :foo => :bar)
+        described_class.new(:foo => :bar)
       end
     end
 
@@ -44,7 +44,7 @@ module Guard
       end
 
       context ':all_on_start option is false' do
-        let(:subject) { subject = described_class.new([], :all_on_start => false) }
+        let(:subject) { subject = described_class.new(:all_on_start => false) }
 
         it "doesn't call #run_all" do
           subject.should_not_receive(:run_all)
@@ -93,7 +93,7 @@ module Guard
         end
 
         context ':all_after_pass option is false' do
-          subject { described_class.new([], :all_after_pass => false) }
+          subject { described_class.new(:all_after_pass => false) }
 
           it "doesn't call #run_all" do
             runner.should_receive(:run).with(['spec/foo']) { false }
@@ -119,7 +119,7 @@ module Guard
       end
 
       it 'keeps failed spec and rerun them later' do
-        subject = described_class.new([], :all_after_pass => false)
+        subject = described_class.new(:all_after_pass => false)
 
         runner.should_receive(:run).with(['spec/bar']) { false }
 
