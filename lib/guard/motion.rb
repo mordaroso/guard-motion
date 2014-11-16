@@ -4,15 +4,14 @@ require 'guard/guard'
 require 'guard/motion/tasks'
 
 module Guard
-  class Motion < Guard
+  class Motion < Plugin
     autoload :ResultsParser,  'guard/motion/results_parser'
     autoload :Runner,         'guard/motion/runner'
     autoload :Inspector,      'guard/motion/inspector'
 
     # Initialize a Guard.
-    # @param [Array<Guard::Watcher>] watchers the Guard file watchers
     # @param [Hash] options the custom Guard options
-    def initialize(watchers = [], options = {})
+    def initialize(options = {})
       super
       @options = {
         :all_after_pass => true,
